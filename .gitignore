@@ -1,0 +1,5 @@
+*.env*
+*~
+_build/
+.flatpak
+anda-build/
