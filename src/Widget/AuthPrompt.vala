@@ -58,14 +58,21 @@ namespace TauPolkit {
                 if (GLib.FileUtils.test (pfp, GLib.FileTest.EXISTS)) {
                     icon = pfp;
                 } else {
-                    icon = "avatar-default-symbolic";
+                    icon = null;
                 }
             }
 
-            var icon_image = new Gtk.Image () {
-                icon_name = icon,
-                pixel_size = 32
-            };
+            Gtk.Image icon_image;
+            if (icon == null) {
+                icon_image = new Gtk.Image () {
+                    icon_name = "avatar-default-symbolic",
+                };
+            } else {
+                icon_image = new Gtk.Image.from_file (icon);
+            }
+
+            icon_image.set_icon_size (Gtk.IconSize.LARGE);
+
             box.append (icon_image);
 
             string display_name = realname ?? username;
