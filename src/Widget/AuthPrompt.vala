@@ -194,7 +194,6 @@ namespace TauPolkit {
                 user_list.append (user_entry.get_row ());
             }
             user_list.unselect_all ();
-
         }
 
         construct {
@@ -216,27 +215,12 @@ namespace TauPolkit {
             user_list.row_activated.connect ((row) => {
                 var user_entry = (UserEntry) row.get_child ();
                 user_select.set_child (user_entry.new_instance ());
-                // set pk_identity
-                //  pk_identity = user_entry.identity;
                 selected_user = user_entry;
                 // deselect all
                 user_list.unselect_all ();
                 user_popover.popdown ();
             });
 
-
-            // add dummy users to list
-            //  var user1 = new Gtk.ListBoxRow ();
-            //  var user_row_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
-            //  var user_row_icon = new Gtk.Image () {
-            //      icon_name = "avatar-default-symbolic",
-            //      pixel_size = 32
-            //  };
-            //  var user_row_label = new Gtk.Label (_("User 1"));
-            //  user_row_box.append (user_row_icon);
-            //  user_row_box.append (user_row_label);
-            //  user1.set_child (user_row_box);
-            //  user_list.append (user1);
 
 
             var userlist_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 6);
@@ -249,7 +233,6 @@ namespace TauPolkit {
 
             user_select.set_popover (user_popover);
             user_select.set_can_target (true);
-            //  user_select.set_child (user_row_box);
 
 
 
@@ -428,7 +411,7 @@ namespace TauPolkit {
             // get UnixUser from uid
             var user = new Polkit.UnixUser (uid_int);
             // get userentry from uid
-            
+
 
             if (selected_user == null) {
                 selected_user = new UserEntry (user);
@@ -438,7 +421,7 @@ namespace TauPolkit {
 
             debug ("Selected user: %s", selected_user.name);
             var id = selected_user.identity;
-            
+
             pk_identity = id;
             // pk_identity = new Polkit.UnixUser (GLib.Environment.);
 
@@ -464,8 +447,44 @@ namespace TauPolkit {
 
         private void on_pk_show_error (string text) {
             error_label.label = text;
+            // recolor password entry
+            password_entry.add_css_class ("error");
             password_entry.secondary_icon_name = "dialog-error-symbolic";
             sensitive = true;
+            shake ();
+            // async
+            GLib.Timeout.add (2000, () => {
+                password_entry.remove_css_class ("error");
+                // password_entry.secondary_icon_name = null;
+                return false;
+            });
+        }
+
+        private void shake () {
+            int x, y;
+            // shake the password entry
+
+
+            password_entry.grab_focus ();
+            for (int n = 0; n < 10; n++) {
+
+                // randomly change the margins
+                x = (int) (Random.int_range (0, 10));
+                y = (int) (Random.int_range (0, 10));
+                password_entry.margin_top = y;
+                password_entry.margin_bottom = y;
+                //  password_entry.margin_start = x;
+                //  password_entry.margin_end = x;
+
+                Thread.usleep (10000);
+            }
+
+            // move (x, y);
+            // reset margins
+            password_entry.margin_top = 0;
+            password_entry.margin_bottom = 0;
+            password_entry.margin_start = 0;
+            password_entry.margin_end = 0;
         }
 
         private void on_pk_session_completed (bool authorized) {
@@ -498,6 +517,11 @@ namespace TauPolkit {
         private void authenticate () {
             if (pk_session == null) {
                 select_session ();
+            }
+
+            if (password_entry.get_text () == "") {
+                on_pk_show_error (_("Please enter a password."));
+                return;
             }
 
             password_entry.secondary_icon_name = "";
