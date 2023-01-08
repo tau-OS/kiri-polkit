@@ -66,6 +66,7 @@ namespace TauPolkit {
                 throw new Polkit.Error.CANCELLED ("Authentication dialog was dismissed by the user");
             }
             //  app.remove_window (dialog);
+            app.quit ();
             
             return true;
         }

@@ -77,6 +77,14 @@ namespace TauPolkit {
         // private Gtk.Box main_box;
 
         construct {
+
+            var uid = Posix.getuid ();
+            // try and cast to int or 0
+            var uid_int = (int) uid;
+            
+            var id = new Polkit.UnixUser (uid_int);
+
+            pk_identity = id;
             set_title (_("Authentication Required"));
             modal = true;
             icon = "security-high-symbolic";
@@ -123,7 +131,7 @@ namespace TauPolkit {
             // };
 
             subtitle = msg;
-            notify["subtitle"].connect (() => {
+            notify["msg"].connect (() => {
                 debug ("Subtitle changed");
                 debug (subtitle);
                 debug (msg);
@@ -174,7 +182,7 @@ namespace TauPolkit {
             ok_button.clicked.connect (() => {
                 print ("ok");
                 authenticate ();
-                done ();
+                //  done ();
             });
             password_entry = new Gtk.Entry () {
                 halign = Gtk.Align.FILL,
@@ -232,7 +240,7 @@ namespace TauPolkit {
             }
             // set pk_identity to current user
             // get current user
-            var user = GLib.Environment.get_user_name ();
+            //  var user = GLib.Environment.get_user_name ();
             // get uid
             var uid = Posix.getuid ();
             // try and cast to int or 0
@@ -250,8 +258,8 @@ namespace TauPolkit {
                 // break;
                 // }
 
-                string name = ident.to_string ();
-                debug ("Identity: %s", name);
+                //  string name = ident.to_string ();
+                //  debug ("Identity: %s", name);
             }
             pk_identity = id;
             // pk_identity = new Polkit.UnixUser (GLib.Environment.);
