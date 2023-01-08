@@ -34,10 +34,10 @@ namespace TauPolkit {
         private ulong info_signal_id;
         private ulong complete_signal_id;
 
-        //  private Gtk.Widget error_box;
+        // private Gtk.Widget error_box;
         private Gtk.Label error_label;
 
-        public string msg { get; set;}
+        public string msg { get; set; }
 
         private string cookie;
         private bool canceling = false;
@@ -61,6 +61,8 @@ namespace TauPolkit {
             subtitle = msg;
             cancellable.cancelled.connect (cancel);
             debug ("Message: %s", msg);
+
+            grab_focus ();
             // debug ("Icon: %s", icon_name);
 
             // return construct
@@ -83,11 +85,11 @@ namespace TauPolkit {
 
         construct {
 
-            //  var uid = Posix.getuid ();
-            //  // try and cast to int or 0
-            //  var uid_int = (int) uid;
-            
-            //  var id = new Polkit.UnixUser (uid_int);
+            // var uid = Posix.getuid ();
+            //// try and cast to int or 0
+            // var uid_int = (int) uid;
+
+            // var id = new Polkit.UnixUser (uid_int);
             error_label = new Gtk.Label ("") {
                 halign = Gtk.Align.CENTER,
                 valign = Gtk.Align.CENTER,
@@ -98,7 +100,7 @@ namespace TauPolkit {
                 yalign = 0.5f
             };
             error_label.add_css_class ("warning");
-            //  pk_identity = id;
+            // pk_identity = id;
             set_title (_("Authentication Required"));
             modal = true;
             icon = "security-high-symbolic";
@@ -139,16 +141,16 @@ namespace TauPolkit {
             info = _("An application is attempting to perform an action that requires additional privileges.");
             this.icon_name = "security-high";
             debug ("Message: %s", msg);
-            //  subtitle = msg;
-            //  notify["msg"].connect (() => {
-            //      debug ("Subtitle changed");
-            //      debug (subtitle);
-            //      debug (msg);
-            //      if (subtitle != msg) {
-            //          debug ("Subtitle changed to %s", subtitle);
-            //          msg = subtitle;
-            //      }
-            //  });
+            // subtitle = msg;
+            // notify["msg"].connect (() => {
+            // debug ("Subtitle changed");
+            // debug (subtitle);
+            // debug (msg);
+            // if (subtitle != msg) {
+            // debug ("Subtitle changed to %s", subtitle);
+            // msg = subtitle;
+            // }
+            // });
             debug (msg);
 
             // box2.append (text);
@@ -248,27 +250,27 @@ namespace TauPolkit {
             }
             // set pk_identity to current user
             // get current user
-            //  var user = GLib.Environment.get_user_name ();
+            // var user = GLib.Environment.get_user_name ();
             // get uid
             var uid = Posix.getuid ();
             // try and cast to int or 0
             var uid_int = (int) uid;
-            
+
             var id = new Polkit.UnixUser (uid_int);
-            //  foreach (unowned Polkit.Identity? ident in idents) {
-            //      //  if (ident != null) {
-            //      //      string name = ident.to_string ();
-            //      //      debug ("Identity: %s", name);
-            //      //  }
+            // foreach (unowned Polkit.Identity? ident in idents) {
+            ////  if (ident != null) {
+            ////      string name = ident.to_string ();
+            ////      debug ("Identity: %s", name);
+            ////  }
 
-            //      // if (name == user) {
-            //      // pk_identity = ident;
-            //      // break;
-            //      // }
+            //// if (name == user) {
+            //// pk_identity = ident;
+            //// break;
+            //// }
 
-            //      //  string name = ident.to_string ();
-            //      //  debug ("Identity: %s", name);
-            //  }
+            ////  string name = ident.to_string ();
+            ////  debug ("Identity: %s", name);
+            // }
             pk_identity = id;
             // pk_identity = new Polkit.UnixUser (GLib.Environment.);
 
