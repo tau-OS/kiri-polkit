@@ -48,7 +48,7 @@ namespace TauPolkit {
             //  debug ("Icon: %s", icon_name);
             //  debug ("Cookie: %s", cookie);
             //  debug ("Identities: %s", identitie);
-            app = new He.Application ("co.tauos.polkit", ApplicationFlags.FLAGS_NONE);
+            app = new PromptApp ();
             app.run (null);
             
             var dialog = new TauPolkit.PromptWindow (message, icon_name, cookie, identities, cancellable);
@@ -125,12 +125,7 @@ namespace TauPolkit {
         }
 
         while (true) {
-            try {
-                MainContext.default ().iteration (true);
-            } catch (Error e) {
-                critical ("Unable to iterate main loop: %s", e.message);
-                return 1;
-            }
+            MainContext.default ().iteration (true);
         }
 
         //  return agent.app.run (args);

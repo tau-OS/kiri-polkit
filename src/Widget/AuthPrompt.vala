@@ -34,7 +34,10 @@ namespace TauPolkit {
         private ulong info_signal_id;
         private ulong complete_signal_id;
 
-        private string msg;
+        //  private Gtk.Widget error_box;
+        private Gtk.Label error_label;
+
+        public string msg { get; set;}
 
         private string cookie;
         private bool canceling = false;
@@ -47,6 +50,7 @@ namespace TauPolkit {
             Object (
             );
 
+
             // debug ("_Cookie: %s", _cookie);
             cookie = _cookie;
             debug ("Cookie: %s", cookie);
@@ -54,6 +58,7 @@ namespace TauPolkit {
             idents = _idents;
             debug (idents.length ().to_string ());
             msg = message;
+            subtitle = msg;
             cancellable.cancelled.connect (cancel);
             debug ("Message: %s", msg);
             // debug ("Icon: %s", icon_name);
@@ -78,13 +83,22 @@ namespace TauPolkit {
 
         construct {
 
-            var uid = Posix.getuid ();
-            // try and cast to int or 0
-            var uid_int = (int) uid;
+            //  var uid = Posix.getuid ();
+            //  // try and cast to int or 0
+            //  var uid_int = (int) uid;
             
-            var id = new Polkit.UnixUser (uid_int);
-
-            pk_identity = id;
+            //  var id = new Polkit.UnixUser (uid_int);
+            error_label = new Gtk.Label ("") {
+                halign = Gtk.Align.CENTER,
+                valign = Gtk.Align.CENTER,
+                wrap = true,
+                wrap_mode = Pango.WrapMode.WORD_CHAR,
+                max_width_chars = 30,
+                xalign = 0,
+                yalign = 0.5f
+            };
+            error_label.add_css_class ("warning");
+            //  pk_identity = id;
             set_title (_("Authentication Required"));
             modal = true;
             icon = "security-high-symbolic";
@@ -123,23 +137,18 @@ namespace TauPolkit {
             // };
             // box2.append (warning_txt);
             info = _("An application is attempting to perform an action that requires additional privileges.");
-            // var text = new Gtk.Label (_("Authentication is required to install software")) {
-            // halign = Gtk.Align.START,
-            // valign = Gtk.Align.START,
-            // wrap = true,
-            // wrap_mode = Pango.WrapMode.WORD
-            // };
-
-            subtitle = msg;
-            notify["msg"].connect (() => {
-                debug ("Subtitle changed");
-                debug (subtitle);
-                debug (msg);
-                if (subtitle != msg) {
-                    debug ("Subtitle changed to %s", subtitle);
-                    msg = subtitle;
-                }
-            });
+            this.icon_name = "security-high";
+            debug ("Message: %s", msg);
+            //  subtitle = msg;
+            //  notify["msg"].connect (() => {
+            //      debug ("Subtitle changed");
+            //      debug (subtitle);
+            //      debug (msg);
+            //      if (subtitle != msg) {
+            //          debug ("Subtitle changed to %s", subtitle);
+            //          msg = subtitle;
+            //      }
+            //  });
             debug (msg);
 
             // box2.append (text);
@@ -180,9 +189,8 @@ namespace TauPolkit {
             });
             primary_button = ok_button;
             ok_button.clicked.connect (() => {
-                print ("ok");
+                subtitle = "Hello";
                 authenticate ();
-                //  done ();
             });
             password_entry = new Gtk.Entry () {
                 halign = Gtk.Align.FILL,
@@ -201,7 +209,8 @@ namespace TauPolkit {
             password_entry.activate.connect (() => {
                 ok_button.clicked ();
             });
-
+            // append error box before password entry
+            box2.append (error_label);
             box2.append (password_entry);
 
             box.append (box2);
@@ -230,7 +239,6 @@ namespace TauPolkit {
             // check if parent is a He.Application
             // if (parent is He.Application) {
             // var app = (He.Application) parent;
-            // app.quit_mainloop ();
             // }
         }
 
@@ -247,20 +255,20 @@ namespace TauPolkit {
             var uid_int = (int) uid;
             
             var id = new Polkit.UnixUser (uid_int);
-            foreach (unowned Polkit.Identity? ident in idents) {
-                //  if (ident != null) {
-                //      string name = ident.to_string ();
-                //      debug ("Identity: %s", name);
-                //  }
+            //  foreach (unowned Polkit.Identity? ident in idents) {
+            //      //  if (ident != null) {
+            //      //      string name = ident.to_string ();
+            //      //      debug ("Identity: %s", name);
+            //      //  }
 
-                // if (name == user) {
-                // pk_identity = ident;
-                // break;
-                // }
+            //      // if (name == user) {
+            //      // pk_identity = ident;
+            //      // break;
+            //      // }
 
-                //  string name = ident.to_string ();
-                //  debug ("Identity: %s", name);
-            }
+            //      //  string name = ident.to_string ();
+            //      //  debug ("Identity: %s", name);
+            //  }
             pk_identity = id;
             // pk_identity = new Polkit.UnixUser (GLib.Environment.);
 
@@ -285,8 +293,7 @@ namespace TauPolkit {
         }
 
         private void on_pk_show_error (string text) {
-            // feedback_revealer.reveal_child = true;
-            // feedback_label.label = text;
+            error_label.label = text;
             password_entry.secondary_icon_name = "dialog-error-symbolic";
             sensitive = true;
         }
