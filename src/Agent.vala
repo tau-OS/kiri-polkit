@@ -26,6 +26,7 @@
 namespace TauPolkit {
     public class Agent : PolkitAgent.Listener {
         public Agent () {
+            //  app = new PromptApp ();
             register_with_session.begin ((obj, res) => {
                 bool success = register_with_session.end (res);
                 if (!success) {
@@ -34,19 +35,28 @@ namespace TauPolkit {
             });
         }
 
-        private He.Application app;
+        public He.Application app;
 
         public override async bool initiate_authentication (string action_id, string message, string icon_name,
                                                             Polkit.Details details, string cookie, GLib.List<Polkit.Identity> identities, GLib.Cancellable? cancellable) throws Polkit.Error {
             if (identities == null) {
                 return false;
             }
-            app = new He.Application ("co.tauos.polkit", ApplicationFlags.FLAGS_NONE);
 
+            debug ("Initiating authentication for action %s", action_id);
+            //  debug ("Message: %s", message);
+            //  debug ("Icon: %s", icon_name);
+            //  debug ("Cookie: %s", cookie);
+            //  debug ("Identities: %s", identitie);
+            app = new He.Application ("co.tauos.polkit", ApplicationFlags.FLAGS_NONE);
+            app.run (null);
+            
             var dialog = new TauPolkit.PromptWindow (message, icon_name, cookie, identities, cancellable);
             dialog.set_application (app);
+            //  app.startup ();
             dialog.done.connect (() => initiate_authentication.callback ());
 
+            
             dialog.show ();
             yield;
 
@@ -55,7 +65,8 @@ namespace TauPolkit {
             if (dialog.was_canceled) {
                 throw new Polkit.Error.CANCELLED ("Authentication dialog was dismissed by the user");
             }
-
+            //  app.remove_window (dialog);
+            
             return true;
         }
 
@@ -86,13 +97,16 @@ namespace TauPolkit {
     }
 
     public static int main (string[] args) {
-        // Gtk.init ();
-        // app = new He.Application ("co.tauos.polkit", ApplicationFlags.FLAGS_NONE);
-        // var prompt = new TauPolkit.PromptWindow (null, null, null, null, null);
+        Gtk.init ();
         // prompt.set_application (app);
+        // app.set_application_id ("co.tauos.polkit");
+        // app.add_window (prompt);
+        // prompt.show ();
+
 
         var agent = new Agent ();
         int pid = Posix.getpid ();
+
 
         Polkit.Subject? subject = null;
         try {
@@ -104,12 +118,20 @@ namespace TauPolkit {
 
         try {
             PolkitAgent.register_listener (agent, subject, null);
-            // todo: find a way to unregister gnome polkit agent for testing
         } catch (Error e) {
             print ("Unable to register Polkit agent: %s", e.message);
             return 1;
         }
 
-        return 0;
+        while (true) {
+            try {
+                MainContext.default ().iteration (true);
+            } catch (Error e) {
+                critical ("Unable to iterate main loop: %s", e.message);
+                return 1;
+            }
+        }
+
+        //  return agent.app.run (args);
     }
 }
