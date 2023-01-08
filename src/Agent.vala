@@ -1,6 +1,7 @@
 /*-
  * Copyright (c) 2015-2016 elementary LLC.
  * Copyright (C) 2015-2016 Ikey Doherty <ikey@solus-project.com>
+ * Copyright (C) 2023 Fyra Labs
  *
  * This program is free software: you can redistribute it and/or modify
  * it under the terms of the GNU Lesser General Public License as published by
@@ -118,7 +119,7 @@ namespace TauPolkit {
         }
 
         try {
-            PolkitAgent.register_listener (agent, subject, null);
+            PolkitAgent.register_listener (agent, subject, "/co/tauos/polkit/AuthenticationAgent");
         } catch (Error e) {
             print ("Unable to register Polkit agent: %s", e.message);
             return 1;
