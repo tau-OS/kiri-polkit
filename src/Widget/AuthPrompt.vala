@@ -191,7 +191,7 @@ namespace TauPolkit {
             });
             primary_button = ok_button;
             ok_button.clicked.connect (() => {
-                subtitle = "Hello";
+                //  subtitle = "Hello";
                 authenticate ();
             });
             password_entry = new Gtk.Entry () {
