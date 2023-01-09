@@ -72,6 +72,9 @@ namespace TauPolkit {
             }
 
             icon_image.set_icon_size (Gtk.IconSize.LARGE);
+            icon_image.add_css_class ("rounded");
+            icon_image.add_css_class ("content-block-image");
+
 
             box.append (icon_image);
 
@@ -83,6 +86,10 @@ namespace TauPolkit {
             };
 
             box.append (name_label);
+            box.hexpand = true;
+            //  box.homogeneous = true; 
+
+            //  box.add_css_class ("mini-content-block");
 
             this.append (box);
         }
@@ -148,7 +155,7 @@ namespace TauPolkit {
             cancellable.cancelled.connect (cancel);
             debug ("Message: %s", msg);
             load_idents ();
-            grab_focus ();
+            password_entry.grab_focus ();
             // debug ("Icon: %s", icon_name);
 
             // return construct
@@ -204,13 +211,24 @@ namespace TauPolkit {
                 tooltip_text = _("Select a user to authenticate as")
             };
             user_select.add_css_class ("flat");
+            //  user_select.add_css_class ("content-block");
+            //  user_select.add_css_class ("content-list");
 
             // load stuff into user_select
 
             user_list = new Gtk.ListBox () {
-                selection_mode = Gtk.SelectionMode.SINGLE,
+                selection_mode = Gtk.SelectionMode.NONE,
                 activate_on_single_click = true
             };
+
+
+            user_list.add_css_class ("flat");
+            //  user_list.add_css_class ("content-list");
+
+            user_select.activate.connect (() => {
+                user_popover.popup ();
+                user_list.unselect_all ();
+            });
 
             user_list.row_activated.connect ((row) => {
                 var user_entry = (UserEntry) row.get_child ();
@@ -230,11 +248,11 @@ namespace TauPolkit {
 
             user_popover = new Gtk.Popover ();
             user_popover.set_child (userlist_box);
+            user_popover.set_has_arrow (false);
+            user_popover.add_css_class ("flat");
 
             user_select.set_popover (user_popover);
             user_select.set_can_target (true);
-
-
 
             // var uid = Posix.getuid ();
             //// try and cast to int or 0
@@ -340,6 +358,11 @@ namespace TauPolkit {
             cancel_button.clicked.connect (() => {
                 cancel ();
             });
+
+            // connect closed signal
+            this.close_request.connect (() => {
+                cancel_button.clicked ();
+            });
             primary_button = ok_button;
             ok_button.clicked.connect (() => {
                 // subtitle = "Hello";
@@ -353,9 +376,16 @@ namespace TauPolkit {
             };
 
             password_entry.set_input_purpose (Gtk.InputPurpose.PASSWORD);
-            password_entry.set_icon_from_icon_name (Gtk.EntryIconPosition.PRIMARY, "dialog-password-symbolic");
+            password_entry.set_icon_from_icon_name (Gtk.EntryIconPosition.PRIMARY, "view-conceal-symbolic");
             password_entry.icon_release.connect (() => {
                 password_entry.visibility = !password_entry.visibility;
+                if (password_entry.visibility) {
+                    // add class
+                    password_entry.set_icon_from_icon_name (Gtk.EntryIconPosition.PRIMARY, "view-reveal-symbolic");
+                }
+                else {
+                    password_entry.set_icon_from_icon_name (Gtk.EntryIconPosition.PRIMARY, "view-conceal-symbolic");
+                }
             });
             password_entry.set_icon_activatable (Gtk.EntryIconPosition.PRIMARY, true);
             // connect to authorize button

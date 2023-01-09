@@ -8,13 +8,13 @@
             "group": "build",
             "label": "Build Application"
         },
-        {
-            "type": "meson",
-            "target": "src/co.tauos.ValaTemplate",
-            "mode": "run",
-            "group": "test",
-            "problemMatcher": [],
-            "label": "Run Application"
-        }
+        // {
+        //     "type": "meson",
+        //     "target": "src/co.tauos.ValaTemplate",
+        //     "mode": "run",
+        //     "group": "test",
+        //     "problemMatcher": [],
+        //     "label": "Run Application"
+        // }
     ]
 }
