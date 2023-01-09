@@ -18,6 +18,10 @@
 
 // This is the PolKit agent for tauOS, using libhelium as the GUI
 
+// Dear Lains the designer: I'm sorry for the mess
+// I hope that one day you will eventually clean up this code and make this app
+// comply by the HIG.
+
 namespace TauPolkit {
 
     private class UserEntry : Gtk.Box {
@@ -35,7 +39,6 @@ namespace TauPolkit {
 
         construct {
             var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 12);
-            // if identity is unix user
             if (identity == null) {
                 return;
             }
@@ -87,9 +90,6 @@ namespace TauPolkit {
 
             box.append (name_label);
             box.hexpand = true;
-            //  box.homogeneous = true; 
-
-            //  box.add_css_class ("mini-content-block");
 
             this.append (box);
         }
@@ -127,7 +127,6 @@ namespace TauPolkit {
 
         private UserEntry? selected_user;
 
-        // private Gtk.Widget error_box;
         private Gtk.Label error_label;
 
         public string msg { get; set; }
@@ -144,19 +143,14 @@ namespace TauPolkit {
             );
 
 
-            // debug ("_Cookie: %s", _cookie);
             cookie = _cookie;
-            debug ("Cookie: %s", cookie);
             cancellable = _cancellable;
             idents = _idents;
-            debug (idents.length ().to_string ());
             msg = message;
             subtitle = msg;
             cancellable.cancelled.connect (cancel);
-            debug ("Message: %s", msg);
             load_idents ();
             password_entry.grab_focus ();
-            // debug ("Icon: %s", icon_name);
 
             // return construct
         }
@@ -183,6 +177,9 @@ namespace TauPolkit {
 
             // if user_list is already populated, clear it
             user_list.selected_foreach ((row) => {
+                // This is probably inefficient,
+                // but I do not want to initiate a whole new list and
+                // re-style it
                 user_list.remove (row);
             });
             foreach (unowned Polkit.Identity? ident in idents) {
@@ -191,8 +188,7 @@ namespace TauPolkit {
                 }
 
                 var user_entry = new UserEntry (ident);
-                // if uid
-                // get uid
+                // todo: possibly use polkit identity instead of current user
                 var current_uid = (int) Posix.getuid ();
                 if (user_entry.uid == current_uid) {
                     user_select.set_child (user_entry.new_instance ());
@@ -211,8 +207,11 @@ namespace TauPolkit {
                 tooltip_text = _("Select a user to authenticate as")
             };
             user_select.add_css_class ("flat");
-            //  user_select.add_css_class ("content-block");
-            //  user_select.add_css_class ("content-list");
+
+            // the comment below breaks the styling,
+            // shit still looks ugly though
+            // user_select.add_css_class ("content-block");
+            // user_select.add_css_class ("content-list");
 
             // load stuff into user_select
 
@@ -223,7 +222,7 @@ namespace TauPolkit {
 
 
             user_list.add_css_class ("flat");
-            //  user_list.add_css_class ("content-list");
+            // user_list.add_css_class ("content-list");
 
             user_select.activate.connect (() => {
                 user_popover.popup ();
@@ -253,12 +252,6 @@ namespace TauPolkit {
 
             user_select.set_popover (user_popover);
             user_select.set_can_target (true);
-
-            // var uid = Posix.getuid ();
-            //// try and cast to int or 0
-            // var uid_int = (int) uid;
-
-            // var id = new Polkit.UnixUser (uid_int);
             error_label = new Gtk.Label ("") {
                 halign = Gtk.Align.CENTER,
                 valign = Gtk.Align.CENTER,
@@ -274,82 +267,13 @@ namespace TauPolkit {
             modal = true;
             icon = "security-high-symbolic";
             title = _("Authentication Required");
-            // main_box = new Gtk.Box (Gtk.Orientation.VERTICAL, 24) {
-            // margin_top = 24,
-            // margin_bottom = 24,
-            // margin_start = 24,
-            // margin_end = 24
-            // };
-
-            //// allocate space for window
             var box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 24);
 
             var box2 = new Gtk.Box (Gtk.Orientation.VERTICAL, 8);
             box2.set_hexpand (true);
-            //// add lock icon
-            // var image = new Gtk.Image () {
-            // valign = Gtk.Align.START,
-            // pixel_size = 48,
-            // icon_name = "security-high-symbolic"
-            // };
-            // box.append (image);
-            // var label = new Gtk.Label (_("Authentication Required")) {
-            // halign = Gtk.Align.START,
-            // valign = Gtk.Align.START,
-            // };
-            // label.add_css_class ("view-title");
-            // box2.append (label);
-
-            // var warning_txt = new Gtk.Label (_("An application is attempting to perform an action that requires additional privileges:")) {
-            // halign = Gtk.Align.START,
-            // valign = Gtk.Align.START,
-            // wrap = false,
-            // wrap_mode = Pango.WrapMode.WORD
-            // };
-            // box2.append (warning_txt);
             info = _("An application is attempting to perform an action that requires additional privileges.");
             this.icon_name = "security-high";
-            debug ("Message: %s", msg);
-            // subtitle = msg;
-            // notify["msg"].connect (() => {
-            // debug ("Subtitle changed");
-            // debug (subtitle);
-            // debug (msg);
-            // if (subtitle != msg) {
-            // debug ("Subtitle changed to %s", subtitle);
-            // msg = subtitle;
-            // }
-            // });
-            debug (msg);
 
-            // box2.append (text);
-            // box.append (box2);
-            //// user box
-            //// get user name
-            // var user = GLib.Environment.get_user_name ();
-            // var user_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 24);
-            // var avatar = new Gtk.Image () {
-            // pixel_size = 24,
-            // icon_name = "avatar-default-symbolic"
-            // };
-            // user_box.append (avatar);
-            // var user_label = new Gtk.Label (user) {
-            // halign = Gtk.Align.START,
-            // valign = Gtk.Align.CENTER,
-            // };
-            // user_box.append (user_label);
-            // box2.append (user_box);
-
-            //// password box
-            // box to contain the password entry
-
-            //// buttons
-
-            // var button_box = new Gtk.Box (Gtk.Orientation.HORIZONTAL, 24) {
-            // halign = Gtk.Align.END,
-            // valign = Gtk.Align.END
-            // };
-            // button_box.append (cancel_button);
             var ok_button = new He.FillButton (_("Authenticate")) {
                 halign = Gtk.Align.END,
                 valign = Gtk.Align.END
@@ -365,7 +289,6 @@ namespace TauPolkit {
             });
             primary_button = ok_button;
             ok_button.clicked.connect (() => {
-                // subtitle = "Hello";
                 authenticate ();
             });
             password_entry = new Gtk.Entry () {
@@ -380,10 +303,8 @@ namespace TauPolkit {
             password_entry.icon_release.connect (() => {
                 password_entry.visibility = !password_entry.visibility;
                 if (password_entry.visibility) {
-                    // add class
                     password_entry.set_icon_from_icon_name (Gtk.EntryIconPosition.PRIMARY, "view-reveal-symbolic");
-                }
-                else {
+                } else {
                     password_entry.set_icon_from_icon_name (Gtk.EntryIconPosition.PRIMARY, "view-conceal-symbolic");
                 }
             });
@@ -401,55 +322,25 @@ namespace TauPolkit {
 
             add (box);
 
+            // useless call that makes you do things twice
+
             select_session ();
 
 
-            // main_box.append (box);
-            // var window_handle = new Gtk.WindowHandle () {
-            // child = main_box
-            // };
-
-            // entry.activate.connect (() => {
-            // ok_button.clicked ();
-            // });
-
-            // set_child (window_handle);
-
-            // set_size_request (600, 200);
-            // set_default_size (600, 200);
             set_resizable (false);
-            // show ();
-
-            // check if parent is a He.Application
-            // if (parent is He.Application) {
-            // var app = (He.Application) parent;
-            // }
         }
 
         private void select_session () {
             if (pk_session != null) {
                 deselect_session ();
             }
-            // set pk_identity to current user
-            // get current user
-            // var user = GLib.Environment.get_user_name ();
-            // get uid
-            var uid = Posix.getuid ();
-            // try and cast to int or 0
-            var uid_int = (int) uid;
-
-            // get UnixUser from uid
-            var user = new Polkit.UnixUser (uid_int);
-            // get userentry from uid
-
-
             if (selected_user == null) {
-                selected_user = new UserEntry (user);
+                // compressed into inline for maximum efficiency
+                selected_user = new UserEntry (new Polkit.UnixUser ((int) Posix.getuid ()));
             }
 
             // get selected user from list box
 
-            debug ("Selected user: %s", selected_user.name);
             var id = selected_user.identity;
 
             pk_identity = id;
@@ -492,7 +383,10 @@ namespace TauPolkit {
 
         private void shake () {
             int x, y;
-            // shake the password entry
+            
+            // Programmers notes:
+            // This shake function does not atually work.
+            // CSS magic is required for shaking.
 
 
             password_entry.grab_focus ();
@@ -503,14 +397,9 @@ namespace TauPolkit {
                 y = (int) (Random.int_range (0, 10));
                 password_entry.margin_top = y;
                 password_entry.margin_bottom = y;
-                //  password_entry.margin_start = x;
-                //  password_entry.margin_end = x;
-
                 Thread.usleep (10000);
             }
 
-            // move (x, y);
-            // reset margins
             password_entry.margin_top = 0;
             password_entry.margin_bottom = 0;
             password_entry.margin_start = 0;
@@ -549,49 +438,55 @@ namespace TauPolkit {
                 select_session ();
             }
 
+
+            // if we do not do this, the agent will freeze until the end of time
+            // no im serious. polkit is very janky.
+            // I seriously do not know how people continue to write polkit
+            // agents and the API is locked behind a compiler flag
             if (password_entry.get_text () == "") {
                 on_pk_show_error (_("Please enter a password."));
                 return;
             }
 
             password_entry.secondary_icon_name = "";
-            // feedback_revealer.reveal_child = false;
             password_entry.visibility = false;
-            // var t = pk_session.get_type ();
 
             sensitive = false;
-            // debug (password_entry.get_text ());
-            // debug (t.name ());
             pk_session.response (password_entry.get_text ());
         }
     }
 
-    // Only for testing purposes, real usage is in Agent.vala
+    // Gtk.Application so GTK4 can live peacefully
     public class PromptApp : He.Application {
 
 
         public He.Window window;
         public PromptApp () {
-            Object (application_id: "co.tauos.polagent");
+            Object (application_id: "com.fyralabs.KiriPolkitAgent");
         }
 
         // main window
         public override void activate () {
-            /*  if (window == null) {
-                var win = new PromptWindow ();
-                win.set_application (this);
-                window = win;
-               }  */
-        }
+            /*
+                Activate what?
+                What do I activate?
+                There's nothing in here.
+                This is a blank window.
+                GO AWAY. THERE'S NOTHING TO SEE HERE
 
-        // main function
-        // public static int main (string[] args) {
-        // Intl.setlocale (LocaleCategory.ALL, "");
-        // Intl.bindtextdomain (GETTEXT_PACKAGE, LOCALEDIR);
-        // Intl.bind_textdomain_codeset (GETTEXT_PACKAGE, "UTF-8");
-        // Intl.textdomain (GETTEXT_PACKAGE);
-        // var app = new PromptApp ();
-        // return app.run (args);
-        // }
+                (obligatory activate implementation so GTK does not
+                scream at me)
+            */
+            
+            // do something idk
+            // assert that 1 + 1 = 2, or
+            // we are living in 1984
+            assert (1 + 1 == 2);
+            if (1 + 1 != 2) {
+                // if we are not in 1984, then
+                error ("Big brother has now redefined physics. Unable to continue due to legal reasons. Exiting...");
+                // we are in 1984
+            }
+        }
     }
 }

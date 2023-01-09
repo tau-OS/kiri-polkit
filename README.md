@@ -1,6 +1,6 @@
-# tauOS PolKit agent
+# Kiri Desktop PolKit agent
 
-This is a Polkit agent for tauOS. It adds a prompt when trying to access Polkit actions that require authentication.
+This is a Polkit agent for the Kiri Desktop. It adds a prompt when trying to access Polkit actions that require authentication.
 
 ## Building
 

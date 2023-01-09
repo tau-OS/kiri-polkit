@@ -16,12 +16,15 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * Authored by: Adam Bieńkowski <donadigos159@gmail.com>
+ * Authored by: Cappy Ishihara <cappy@cappuchino.xyz>
  */
 
 /*
  * Code based on budgie-desktop:
  * https://github.com/solus-project/budgie-desktop
+
+ * And more shameless elementary OS code:
+ * https://github.com/elementary/pantheon-agent-polkit
  */
 
 namespace TauPolkit {
@@ -45,10 +48,6 @@ namespace TauPolkit {
             }
 
             debug ("Initiating authentication for action %s", action_id);
-            //  debug ("Message: %s", message);
-            //  debug ("Icon: %s", icon_name);
-            //  debug ("Cookie: %s", cookie);
-            //  debug ("Identities: %s", identitie);
             app = new PromptApp ();
             app.run (null);
             
@@ -66,14 +65,13 @@ namespace TauPolkit {
             if (dialog.was_canceled) {
                 throw new Polkit.Error.CANCELLED ("Authentication dialog was dismissed by the user");
             }
-            //  app.remove_window (dialog);
             app.quit ();
             
             return true;
         }
 
         private async bool register_with_session () {
-            var sclient = yield Utils.register_with_session ("co.tauos.polkit");
+            var sclient = yield Utils.register_with_session ("com.fyralabs.KiriPolkitAgent");
 
             if (sclient == null) {
                 return false;

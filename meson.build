@@ -1,4 +1,5 @@
 project (
+    # todo: rename to kiri-polkit-agent and move to /usr/libexec/kiri-polkit-agent
     'tau-polkit-agent',
     'vala', 'c',
     version : '0.1.0',
@@ -6,7 +7,7 @@ project (
 
 add_project_arguments([
         '-DGETTEXT_PACKAGE="@0@"'.format(meson.project_name()),
-        '-DG_LOG_DOMAIN="co.tauos.polkit"'
+        '-DG_LOG_DOMAIN="com.fyralabs.KiriPolkitAgent"'
     ],
     language: 'c'
 )

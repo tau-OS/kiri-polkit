@@ -15,7 +15,7 @@
  * You should have received a copy of the GNU Lesser General Public License
  * along with this program. If not, see <http://www.gnu.org/licenses/>.
  *
- * Authored by: Adam Bieńkowski <donadigos159@gmail.com>
+ * Authored by: Cappy Ishihara <cappy@cappuchino.xyz>
  */
 
 /*

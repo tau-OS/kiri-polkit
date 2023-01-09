@@ -13,11 +13,8 @@ agent_deps = [
     dependency('gobject-2.0'),
     dependency('polkit-agent-1'),
     meson.get_compiler('vala').find_library('posix'),
-    # dependency('posix'),
 
 ]
-
-subdir('Widget')
 
 executable(
     meson.project_name(),
