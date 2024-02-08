@@ -1,6 +1,6 @@
 project (
     # todo: rename to kiri-polkit-agent and move to /usr/libexec/kiri-polkit-agent
-    'tau-polkit-agent',
+    'kiri-polkit-agent',
     'vala', 'c',
     version : '0.1.0',
 )
