@@ -24,7 +24,7 @@
  * https://github.com/solus-project/budgie-desktop
  */
 
-namespace TauPolkit.Utils {
+namespace KiriPolkit.Utils {
     public const string GNOME_SESSION_MANAGER_IFACE = "org.gnome.SessionManager";
     public const string GNOME_SESSION_MANAGER_PATH = "/org/gnome/SessionManager";
 

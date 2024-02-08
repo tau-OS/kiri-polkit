@@ -23,7 +23,7 @@
  * https://github.com/solus-project/budgie-desktop
  */
 
- namespace TauPolkit {
+ namespace KiriPolkit {
     [DBus (name = "org.gnome.SessionManager")]
     public interface SessionManager : Object {
         public abstract async ObjectPath register_client (string app_id, string client_start_id) throws GLib.Error;

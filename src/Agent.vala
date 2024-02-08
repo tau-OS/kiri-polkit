@@ -27,7 +27,7 @@
  * https://github.com/elementary/pantheon-agent-polkit
  */
 
-namespace TauPolkit {
+namespace KiriPolkit {
     public class Agent : PolkitAgent.Listener {
         public Agent () {
             //  app = new PromptApp ();
@@ -51,7 +51,7 @@ namespace TauPolkit {
             app = new PromptApp ();
             app.run (null);
             
-            var dialog = new TauPolkit.PromptWindow (message, icon_name, cookie, identities, cancellable);
+            var dialog = new KiriPolkit.PromptWindow (message, icon_name, cookie, identities, cancellable);
             dialog.set_application (app);
             //  app.startup ();
             dialog.done.connect (() => initiate_authentication.callback ());
@@ -117,7 +117,7 @@ namespace TauPolkit {
         }
 
         try {
-            PolkitAgent.register_listener (agent, subject, "/co/tauos/polkit/AuthenticationAgent");
+            PolkitAgent.register_listener (agent, subject, "/com/fyralabs/polkit/AuthenticationAgent");
         } catch (Error e) {
             print ("Unable to register Polkit agent: %s", e.message);
             return 1;

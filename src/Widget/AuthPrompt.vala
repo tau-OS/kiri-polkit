@@ -22,7 +22,7 @@
 // I hope that one day you will eventually clean up this code and make this app
 // comply by the HIG.
 
-namespace TauPolkit {
+namespace KiriPolkit {
 
     private class UserEntry : Gtk.Box {
         public Polkit.Identity? identity { get; construct; }
@@ -33,7 +33,7 @@ namespace TauPolkit {
 
         public UserEntry (Polkit.Identity _identity) {
             Object (
-                    identity: _identity
+                    identity : _identity
             );
         }
 
@@ -147,7 +147,9 @@ namespace TauPolkit {
             cancellable = _cancellable;
             idents = _idents;
             msg = message;
-            subtitle = msg;
+            info = msg;
+            decorated = false;
+            resizable = false;
             cancellable.cancelled.connect (cancel);
             load_idents ();
             password_entry.grab_focus ();
@@ -383,7 +385,7 @@ namespace TauPolkit {
 
         private void shake () {
             int x, y;
-            
+
             // Programmers notes:
             // This shake function does not atually work.
             // CSS magic is required for shaking.
@@ -462,7 +464,7 @@ namespace TauPolkit {
 
         public He.Window window;
         public PromptApp () {
-            Object (application_id: "com.fyralabs.KiriPolkitAgent");
+            Object (application_id : "com.fyralabs.KiriPolkitAgent");
         }
 
         // main window
@@ -476,8 +478,8 @@ namespace TauPolkit {
 
                 (obligatory activate implementation so GTK does not
                 scream at me)
-            */
-            
+             */
+
             // do something idk
             // assert that 1 + 1 = 2, or
             // we are living in 1984
