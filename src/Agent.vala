@@ -41,8 +41,13 @@ namespace KiriPolkit {
 
         public He.Application app;
 
-        public override async bool initiate_authentication (string action_id, string message, string icon_name,
-                                                            Polkit.Details details, string cookie, GLib.List<Polkit.Identity> identities, GLib.Cancellable? cancellable) throws Polkit.Error {
+        public override async bool initiate_authentication (string action_id,
+                                                            string message,
+                                                            string icon_name,
+                                                            Polkit.Details details,
+                                                            string cookie,
+                                                            GLib.List<Polkit.Identity> identities,
+                                                            GLib.Cancellable? cancellable) throws Polkit.Error {
             if (identities == null) {
                 return false;
             }
@@ -57,14 +62,17 @@ namespace KiriPolkit {
             dialog.done.connect (() => initiate_authentication.callback ());
 
 
-            dialog.show ();
+            dialog.set_visible (true);
             yield;
 
-            dialog.destroy ();
 
             if (dialog.was_canceled) {
-                throw new Polkit.Error.CANCELLED ("Authentication dialog was dismissed by the user");
+                warning ("Authentication dialog was dismissed by the user");
+                // Oh, turns out if you throw an error it crashes the whole thing!
+                // throw new Polkit.Error.CANCELLED ("Authentication dialog was dismissed by the user");
             }
+            dialog.set_visible (false);
+            dialog.dispose ();
             app.quit ();
 
             return true;

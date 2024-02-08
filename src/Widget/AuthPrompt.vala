@@ -159,8 +159,6 @@ namespace KiriPolkit {
         }
 
         private void cancel () {
-            // FIXME: This crashes the app!? 
-            // Simply just close the window and reject the request, 
             canceling = true;
             if (pk_session != null) {
                 pk_session.cancel ();
