@@ -30,7 +30,7 @@
 namespace KiriPolkit {
     public class Agent : PolkitAgent.Listener {
         public Agent () {
-            //  app = new PromptApp ();
+            // app = new PromptApp ();
             register_with_session.begin ((obj, res) => {
                 bool success = register_with_session.end (res);
                 if (!success) {
@@ -50,13 +50,13 @@ namespace KiriPolkit {
             debug ("Initiating authentication for action %s", action_id);
             app = new PromptApp ();
             app.run (null);
-            
+
             var dialog = new KiriPolkit.PromptWindow (message, icon_name, cookie, identities, cancellable);
             dialog.set_application (app);
-            //  app.startup ();
+            // app.startup ();
             dialog.done.connect (() => initiate_authentication.callback ());
 
-            
+
             dialog.show ();
             yield;
 
@@ -66,7 +66,7 @@ namespace KiriPolkit {
                 throw new Polkit.Error.CANCELLED ("Authentication dialog was dismissed by the user");
             }
             app.quit ();
-            
+
             return true;
         }
 
@@ -127,6 +127,6 @@ namespace KiriPolkit {
             MainContext.default ().iteration (true);
         }
 
-        //  return agent.app.run (args);
+        // return agent.app.run (args);
     }
 }

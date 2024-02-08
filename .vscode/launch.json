@@ -5,28 +5,16 @@
     "version": "0.2.0",
     "configurations": [
         {
-            "setupCommands": [
-                {
-                    "description": "Enable pretty-printing for gdb",
-                    "text": "-enable-pretty-printing",
-                    "ignoreFailures": true
-                }
-            ],
             "preLaunchTask": "Build Application",
-            "type": "cppdbg",
+            "type": "lldb",
             "request": "launch",
-            "name": "Debug",
-            "program": "${workspaceFolder}/builddir/src/tau-polkit-agent",
+            "name": "Launch",
+            "program": "${workspaceFolder}/_build/src/kiri-polkit-agent",
             "args": [],
-            "environment": [
-                {
-                    "name": "G_MESSAGES_DEBUG",
-                    "value": "all"
-                }
-            ],
-            "cwd": "${workspaceFolder}"
-        }
-        // compile first
-
+            "cwd": "${workspaceFolder}",
+            "env": {
+                "G_MESSAGES_DEBUG": "all"
+            }
+        },
     ]
 }

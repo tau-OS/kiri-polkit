@@ -147,6 +147,7 @@ namespace KiriPolkit {
             cancellable = _cancellable;
             idents = _idents;
             msg = message;
+            // todo: center the info text
             info = msg;
             decorated = false;
             resizable = false;
@@ -158,6 +159,8 @@ namespace KiriPolkit {
         }
 
         private void cancel () {
+            // FIXME: This crashes the app!? 
+            // Simply just close the window and reject the request, 
             canceling = true;
             if (pk_session != null) {
                 pk_session.cancel ();
